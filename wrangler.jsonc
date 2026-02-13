@@ -1,6 +1,9 @@
 {
   "name": "personal",
   "compatibility_date": "2026-02-12",
+  "build": {
+    "command": "npm run build"
+  },
   "assets": {
     "directory": "./out"
   }
