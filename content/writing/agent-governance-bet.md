@@ -58,7 +58,7 @@ Honestly? No one is positioned well. That's what makes this interesting, and wha
 - **Microsoft:** Could build this into Azure, but their track record on developer tooling governance (see: Azure DevOps) suggests they'll build something adequate but not category defining.
 - **Startups:** The gap is wide open for a startup that builds governance as the core product, not as a feature of something else.
 
-**The startup I'd want to see:** A founding team with Datadog or HashiCorp DNA. People who've built enterprise observability and infrastructure policy tooling. Open source governance layer in year one to build developer adoption and community trust (the same playbook HashiCorp used with Terraform and Vault). Cloud hosted platform in year two for enterprise customers who want managed governance. Sell to the CFO and compliance team from day one, not the CTO.
+**What I think would work:** A founding team with Datadog or HashiCorp DNA. People who have built enterprise observability and infrastructure policy tooling. Open source governance layer in year one to build developer adoption and community trust (the same playbook HashiCorp used with Terraform and Vault). Cloud hosted platform in year two for enterprise customers who want managed governance. Sell to the CFO and compliance team from day one, not the CTO.
 
 ## What I Think Happens
 
@@ -68,4 +68,4 @@ By the end of 2027, there will be at least one major agent governance company th
 
 If this doesn't happen, it means either: (a) agent adoption stalled for other reasons, (b) the cloud providers absorbed governance into their platforms before a startup could win, or (c) I'm wrong about governance being a standalone category and it turns out to be a feature. I think (c) is most likely to be wrong. Governance is too important and too complex to be a feature.
 
-**Where I think this is heading:** A founding team with enterprise infrastructure DNA, ideally ex Datadog, ex HashiCorp, or ex Stripe. Open source governance layer in year one, cloud product in year two. First enterprise customers from the compliance and finance buyer, not the engineering buyer.
+**Where I think this goes:** The company that wins this will probably have a founding team with enterprise infrastructure DNA, ideally from Datadog, HashiCorp, or Stripe. Open source governance layer in year one, cloud product in year two. First enterprise customers from the compliance and finance buyer, not the engineering buyer.

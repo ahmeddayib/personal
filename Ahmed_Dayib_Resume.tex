@@ -1,0 +1,155 @@
+%-------------------------
+% Resume in Latex
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape Ahmed Dayib} \\ \vspace{1pt}
+    \small 952-217-6716 $|$ \href{mailto:dayibahmed03@gmail.com}{\underline{dayibahmed03@gmail.com}} $|$
+    \href{https://linkedin.com/in/ahmed-dayib-us}{\underline{linkedin.com/in/ahmed-dayib-us}} $|$
+    \href{https://adayib.com}{\underline{adayib.com}}
+\end{center}
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {University of Minnesota}{Minneapolis, MN}
+      {B.S. in Computer Science}{2022 -- 2026}
+  \resumeSubHeadingListEnd
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Software Engineer Intern}{Jun. 2025 -- Aug. 2025}
+      {Simple Automation Labs}{}
+      \resumeItemListStart
+        \resumeItem{Built Python automation pipelines for logistics clients that ingested spreadsheet data, processed and validated shipment records, and triggered email notifications based on configurable business rules.}
+        \resumeItem{Integrated client systems (Excel/CSV ingestion, SMTP email delivery, REST APIs) into end-to-end workflows that replaced manual data entry and reporting processes.}
+        \resumeItem{Deployed automation scripts across multiple client environments, adapting pipelines to each company's data formats and operational requirements.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Software Engineer Intern}{May 2024 -- Sep. 2024}
+      {Delaget}{Minneapolis, MN}
+      \resumeItemListStart
+        \resumeItem{Built React/TypeScript dashboard components for restaurant performance analytics, used by operators at 22,000+ locations including KFC, Taco Bell, and McDonald's.}
+        \resumeItem{Rewrote SQL Server queries for daily report generation, reducing load times by 40\%.}
+        \resumeItem{Developed C\#/.NET backend services for aggregating point-of-sale transactions across multiple restaurant brands.}
+        \resumeItem{Integrated third-party POS systems via REST APIs, expanding platform coverage to additional restaurant brands.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Projects}
+  \resumeSubHeadingListStart
+
+    \resumeProjectHeading
+      {\textbf{Multi-Agent Workflow Orchestrator} $|$ \emph{GPT-5, Claude Sonnet 4.5, CrewAI, LangGraph, MCP, Next.js, PostgreSQL}}{2025}
+      \resumeItemListStart
+        \resumeItem{Built a multi-agent platform with real-time cost tracking, approval gates, audit trails, and rollback capabilities using CrewAI and LangGraph for workflow state management.}
+        \resumeItem{Implemented DAG-based workflow definitions with PostgreSQL persistence, enabling pause/resume, checkpoint rollback, and replay with modified parameters.}
+      \resumeItemListEnd
+
+    \resumeProjectHeading
+      {\textbf{Clinical Trial Matching Engine} $|$ \emph{DeepSeek R1, Claude 3.7 Sonnet, Pinecone, LlamaIndex, FastAPI, React}}{2025}
+      \resumeItemListStart
+        \resumeItem{Built a dual-model RAG system matching patient profiles against ClinicalTrials.gov: DeepSeek R1 locally for PHI-safe patient reasoning, Claude in the cloud for eligibility criteria interpretation.}
+        \resumeItem{Displayed ranked trial matches with criterion-by-criterion evaluation and reasoning traces for clinician verification.}
+      \resumeItemListEnd
+
+    \resumeProjectHeading
+      {\textbf{AI Earnings Intelligence Analyst} $|$ \emph{GPT-4o Structured Outputs, SEC EDGAR API, Chroma, LangChain, Streamlit}}{2024}
+      \resumeItemListStart
+        \resumeItem{Built an AI system that ingests earnings transcripts and SEC filings, producing structured briefs with sentiment trajectories, guidance extraction, and citation-linked risk flags.}
+        \resumeItem{Enforced strict JSON schemas via Structured Outputs so every data point maps to a source passage, with a Streamlit dashboard for quarter-over-quarter tracking.}
+      \resumeItemListEnd
+
+  \resumeSubHeadingListEnd
+
+%-----------TECHNICAL SKILLS-----------
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Languages}{: Python, TypeScript, JavaScript, C/C++, Java, SQL, C\#} \\
+     \textbf{Frameworks}{: React, Next.js, FastAPI, LangChain, LangGraph, CrewAI, LlamaIndex, Streamlit} \\
+     \textbf{AI/ML}{: OpenAI GPT-4o/GPT-5, Claude (Anthropic), DeepSeek R1, MCP, RAG, Vector Databases} \\
+     \textbf{Infrastructure}{: PostgreSQL, Pinecone, Chroma, Weaviate, MongoDB, Redis, Docker, AWS, Git}
+    }}
+ \end{itemize}
+
+%-------------------------------------------
+\end{document}

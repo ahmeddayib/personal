@@ -2,7 +2,7 @@
 company: "Delaget"
 role: "Software Engineer Intern"
 location: "Minneapolis, MN"
-period: "May 2024 - Aug 2024"
+period: "May 2024 - Sep 2024"
 type: "Internship"
 tech: ["TypeScript", "React", "C#", ".NET", "SQL Server", "Azure"]
 order: 1

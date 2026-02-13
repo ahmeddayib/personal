@@ -64,7 +64,7 @@ Legal and government sectors face similar data residency requirements, but the f
 
 ## Why This Matters
 
-If you're evaluating healthcare AI companies, ask about deployment architecture before you ask about model performance. Specifically:
+If you're building in healthcare AI, ask about deployment architecture before you ask about model performance. Specifically:
 
 1. **Can the product operate with local inference?** If not, every hospital deal will take 12 to 18 months of compliance review.
 2. **Does the architecture separate PHI processing from general reasoning?** Dual model architectures are a sign of real healthcare AI expertise.
