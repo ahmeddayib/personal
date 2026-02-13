@@ -24,8 +24,8 @@ const questions = [
 export function Hero() {
   return (
     <section className="w-full">
-      <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl py-20 md:py-32">
-        <div className="max-w-4xl space-y-20 md:space-y-28">
+      <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl py-12 md:py-20">
+        <div className="max-w-4xl space-y-12 md:space-y-16">
           {/* Top: Name + Positioning */}
           <div className="space-y-6 opacity-0 animate-fadeIn">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.1]">
