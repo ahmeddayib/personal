@@ -12,7 +12,7 @@ relatedSlugs:
   - "healthcare-ai-deployment"
 ---
 
-*Last updated: January 2026*
+*Last updated January 2026*
 
 The agentic AI market is splitting into two distinct layers, and most investors are conflating them. The infrastructure layer (orchestration, governance, tool integration) and the application layer (vertical agents that do specific jobs) have different economics, different moats, and different timing. Confusing the two leads to bad bets.
 
@@ -42,7 +42,7 @@ Application layer companies build agents that do specific jobs in specific verti
 
 ## Where the Gaps Are
 
-Three areas I think are underfunded relative to their importance:
+Three areas I think are underfunded relative to their importance.
 
 **Agent governance platforms.** The Kubernetes of agents. Every enterprise deploying agents needs cost controls, approval workflows, and audit trails. No one is building this as a standalone platform yet, and the framework companies (LangChain, CrewAI) are trying to add it as a feature rather than building it as the core product.
 
@@ -60,18 +60,18 @@ Three areas I think are underfunded relative to their importance:
 
 ## Where I Think the Opportunities Are
 
-If I were betting on this space, I would focus on:
+If I were betting on this space, I would focus on
 
 1. **Governance first agent platforms** targeting the CFO buyer, not the CTO buyer
 2. **Vertical agents in regulated industries** where deployment trust is the moat
 3. **Agent evaluation and testing infrastructure** for the enterprise DevOps buyer
 4. **Outcome based pricing infrastructure** that enables the business model shift from per seat to per outcome
 
-These overlap significantly with my individual thesis pieces: governance ([agent governance bet](/writing/agent-governance-bet)), deployment trust ([healthcare AI deployment](/writing/healthcare-ai-deployment)), and pricing model innovation ([outcome pricing shift](/writing/outcome-pricing-shift)). This market map is the summary view; those pieces go deeper on each opportunity.
+These overlap significantly with my individual thesis pieces. Governance ([agent governance bet](/writing/agent-governance-bet)), deployment trust ([healthcare AI deployment](/writing/healthcare-ai-deployment)), and pricing model innovation ([outcome pricing shift](/writing/outcome-pricing-shift)). This market map is the summary view; those pieces go deeper on each opportunity.
 
 The agentic AI market will be enormous. But most of the value will accrue to infrastructure and to vertical applications with deep domain moats, not to horizontal "do everything" agent companies.
 
 ---
 
-*Changelog: Updated quarterly. Next update: April 2026.*
-- *January 2026: Initial publication with infrastructure/application layer analysis, funding estimates, and gap identification.*
+*Changelog. Updated quarterly. Next update April 2026.*
+- *January 2026. Initial publication with infrastructure/application layer analysis, funding estimates, and gap identification.*

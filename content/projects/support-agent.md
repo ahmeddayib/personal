@@ -13,30 +13,32 @@ problemStatement: "Enterprise customer support costs $15-25 per human-handled ti
 thesis: "The copilot-to-agent shift is the defining transition in SaaS AI. Sierra's $10B+ valuation proves the market. But the real unlock is the business model: outcome-based pricing ($0.10-0.50 per resolved action) aligns vendor incentives with customer outcomes for the first time. 63% of this market will be captured by startups, not incumbents, because legacy support platforms can't rebuild around agent-native architecture."
 ---
 
-I built this to answer a question: is the pricing model more important than the agent architecture? Here is what I learned.
+I built this to find out whether the pricing model matters more than the agent architecture. Here is what I learned.
 
 ## The Build
 
-A fully agentic customer support system that doesn't just answer questions but takes actions. Refund processing, subscription modifications, order tracking, account changes, and escalation management, all executed autonomously with human in the loop for high stakes decisions. Built on Claude Sonnet 4 with MCP tool integration, tracked with per outcome pricing infrastructure.
+A customer support system that does not just answer questions but actually does things. Processing refunds, changing subscriptions, tracking orders, updating accounts, and handling escalations. It runs autonomously for straightforward requests and brings a human in for high stakes decisions. Built on Claude Sonnet 4 with MCP for tool integration, and the whole thing is wired up with per outcome pricing.
 
-### Architecture
+### How It Works
 
-**Agent Core:** Claude Sonnet 4 as the primary reasoning engine with system prompts encoding support policy, escalation rules, and action boundaries. LangGraph manages conversation state, enabling multi turn resolution flows that maintain context across complex support scenarios.
+- **Agent Core.** Claude Sonnet 4 is the reasoning engine, with system prompts that encode support policy, escalation rules, and what the agent is and is not allowed to do. LangGraph manages conversation state so it can handle multi turn support scenarios without losing context.
 
-**MCP Tool Layer:** Model Context Protocol integrates external systems as tools the agent can invoke: Stripe for payment operations, PostgreSQL for account data, email for follow ups, knowledge base for policy lookup. Each tool has defined input/output schemas and permission scopes.
+- **MCP Tool Layer.** Model Context Protocol is how the agent talks to external systems. Stripe for payments, PostgreSQL for account data, email for follow ups, and a knowledge base for policy lookups. Each tool has a defined interface and permission scope.
 
-**Outcome Tracking Engine:** Every agent action is classified into outcome categories (refund processed, subscription changed, issue resolved, escalated to human) with associated pricing tiers. PostgreSQL tracks resolution metrics, agent performance, and per outcome billing data. This isn't just analytics. It's the pricing infrastructure.
+- **Outcome Tracking Engine.** Every action gets classified. Refund processed, subscription changed, issue resolved, escalated to human. Each category has a price attached. PostgreSQL tracks all of this, not just for analytics but as the actual billing infrastructure.
 
-**Governance Layer:** OpenAI Agents SDK provides guardrails for action authorization. High value actions (refunds over $100, account deletions) require human approval. The agent explains its reasoning and proposed action; a human approves or redirects. This creates a trust gradient from fully autonomous (FAQ answers) to human approved (financial actions).
+- **Governance Layer.** High value actions like refunds over $100 or account deletions require human approval. The agent explains what it wants to do and why, then waits for a human to approve or redirect. Lower risk actions happen automatically. It is a sliding scale based on risk, not on what the agent is technically capable of doing.
 
-**Interface:** Next.js customer facing chat with real time action status. Internal dashboard shows agent performance, outcome distribution, cost per resolution, and escalation patterns.
+- **Interface.** Next.js customer facing chat with real time action status. Internal dashboard showing agent performance, outcome distribution, cost per resolution, and escalation patterns.
 
-### Key Technical Decisions
+### Key Decisions
 
-- **MCP over custom integrations:** MCP provides a standardized protocol for tool integration. Adding a new tool (CRM, ticketing system, inventory) is a configuration change, not a code change. This is how agents scale across enterprise tool stacks.
-- **Outcome based pricing infrastructure from day one:** Building the metering and billing layer alongside the agent, not as an afterthought. The business model IS the product. Outcome pricing aligns incentives and creates measurable ROI that enterprise buyers can approve.
-- **Graduated autonomy model:** Not all actions are equal. The trust gradient (autonomous to supervised to human approved) maps to risk levels, not technical capability. The agent CAN process a $5,000 refund, but it SHOULDN'T without human approval.
+- **MCP over custom integrations.** A standardized protocol means adding a new tool, like a CRM or ticketing system, is a configuration change instead of a code change. That is how you scale across different company toolsets.
+- **Outcome pricing from day one.** I built the metering and billing layer alongside the agent, not after. The business model is the product. Outcome pricing gives buyers measurable ROI they can actually get approved.
+- **Graduated autonomy model.** Not all actions are equal. The agent can process a $5,000 refund, but it should not do that without a human checking. The trust gradient maps to risk, not to technical capability.
 
 ## What I Learned
 
-The MCP integration was smoother than expected. What was not smooth was the graduated autonomy model. I initially built a binary system: the agent either acts autonomously or escalates to a human. That failed immediately because most support actions exist in a gray zone. A $12 refund should be automatic. A $200 refund probably should too, but a $200 refund for a customer who has already gotten three refunds this month needs a human. The trust gradient ended up being the most complex part of the system, more nuanced than the agent reasoning itself. I also underestimated how much infrastructure the outcome tracking requires. Classifying whether a ticket was truly "resolved" versus just "closed" is its own ML problem, and getting it wrong means your pricing is wrong.
+The MCP integration was smoother than expected. The graduated autonomy was not. I initially built a binary system where the agent either acts on its own or escalates to a human. That failed immediately because most support actions live in a gray zone. A $12 refund should be automatic. A $200 refund probably should too, but a $200 refund for someone who has already gotten three this month needs a human to look at it. The trust gradient ended up being more complex than the agent reasoning itself.
+
+I also underestimated the outcome tracking infrastructure. Figuring out whether a ticket was truly "resolved" versus just "closed" is its own problem, and getting it wrong means your pricing is wrong.

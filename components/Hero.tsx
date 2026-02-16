@@ -61,7 +61,7 @@ export function Hero() {
           <div className="space-y-6 opacity-0 animate-fadeIn delay-400">
             <div className="max-w-2xl space-y-4">
               <p className="text-base md:text-lg text-foreground/80 leading-relaxed">
-                I spent a summer building production software at Delaget, shipping features used by 22,000+ restaurants. That experience, watching how people actually use the things you build, changed how I think about engineering.
+                I spent a summer building production software at Delaget (acquired by PAR Technology, NYSE: PAR), shipping features used by 22,000+ restaurants. That experience, watching how people actually use the things you build, changed how I think about engineering.
               </p>
               <p className="text-base md:text-lg text-foreground/80 leading-relaxed">
                 Since then I&apos;ve been building AI projects across different domains to learn how these systems work in practice, not just in tutorials. Each one taught me something I didn&apos;t expect.

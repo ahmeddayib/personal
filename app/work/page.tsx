@@ -48,7 +48,7 @@ export default function WorkPage() {
     <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl py-16 md:py-24">
       <div className="max-w-4xl">
         {/* Header */}
-        <div className="mb-16 md:mb-24 space-y-6">
+        <div className="mb-10 md:mb-14 space-y-6">
           <span className="font-mono text-xs text-muted-foreground block">
             $ cat work.md
           </span>
@@ -58,13 +58,16 @@ export default function WorkPage() {
         </div>
 
         {/* Background */}
-        <section className="mb-20 md:mb-28">
+        <section className="mb-14 md:mb-20">
           <h2 className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-8">
             Background
           </h2>
           <div className="prose prose-slate dark:prose-invert">
             <p>
-              I spent a summer building production software at Delaget, shipping dashboard features and backend services used by 22,000+ restaurant locations. Shipping to that many locations taught me that production systems are about reliability, not cleverness. A query that is 10% faster but harder to debug is a net negative when something breaks.
+              I spent a summer at Delaget building React dashboards, rewriting SQL queries, and developing .NET services that aggregated POS data across 22,000+ restaurant locations. The biggest lesson was about working in a production codebase at scale. Every change ships to real operators making real decisions, so you learn fast that reliability and query performance matter more than writing clever code.
+            </p>
+            <p>
+              Most recently I was at Simple Automation Labs, building Python automation pipelines for logistics clients. Ingesting messy spreadsheet data, validating shipment records, and wiring up end to end workflows that replaced manual processes.
             </p>
             <p>
               Since then I have been building AI projects across different domains to learn how these systems work in practice. Each one started with a question I wanted to think through by building something.

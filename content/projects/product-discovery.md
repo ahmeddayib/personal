@@ -13,30 +13,32 @@ problemStatement: "E-commerce search is fundamentally broken. Shoppers know what
 thesis: "E-commerce is a $6.3T market where product discovery is still keyword-based. Google processes 20B visual searches per month, proving consumer demand for visual-first shopping. Shopify's 4.61M stores need multimodal search but can't build it. AI-powered product discovery drives 4X conversion over traditional search. The platform distribution play, plugging into Shopify's ecosystem, turns this from a startup into infrastructure."
 ---
 
-I built this to answer a question: does distribution through an existing platform ecosystem beat technology differentiation? Here is what I learned.
+I built this to explore whether distribution through an existing platform beats having better technology. Here is what I found out.
 
 ## The Build
 
-A multimodal product discovery platform that lets shoppers search with images, voice, text, or any combination ("find me something like this photo but in blue and under $50"). Built on Gemini 3.0 Flash for multimodal understanding, OpenCLIP for visual embeddings, and GPT 5.2 for conversational commerce, with native Shopify integration for instant deployment to 4.61M stores.
+A product search tool that lets shoppers find things using images, voice, text, or any combination. Something like "find me something like this photo but in blue and under $50." It uses Gemini 3.0 Flash for understanding multimodal queries, OpenCLIP for visual similarity, and GPT 5.2 for conversational shopping. It plugs directly into Shopify so any of their 4.61M stores can install it.
 
-### Architecture
+### How It Works
 
-**Multimodal Intake:** Shoppers can search via photo upload (find similar products), voice description (Whisper v3 transcription + intent extraction), text query, or hybrid (photo + "but in blue"). Every modality is normalized into a unified query representation that captures visual features, semantic intent, and constraints (price, size, color, brand).
+- **Multimodal Intake.** Shoppers can search however feels natural. Upload a photo to find similar products. Describe what they want by voice (Whisper v3 handles the transcription). Type a query. Or combine them, like a photo plus "but in blue." Everything gets turned into a single representation that captures visual features, meaning, and constraints like price or size.
 
-**Visual Embedding Engine:** OpenCLIP generates visual embeddings for every product in the catalog. Products are embedded not just by their primary image but by multiple angles, lifestyle context, and extracted attributes (pattern, texture, silhouette). Weaviate stores these embeddings with hybrid search capability, combining vector similarity with metadata filters.
+- **Visual Embedding Engine.** OpenCLIP generates embeddings for every product in the catalog, not just from the main image but from multiple angles and extracted attributes like pattern, texture, and shape. Weaviate stores all of this and handles search by combining visual similarity with metadata filters.
 
-**Conversational Discovery:** GPT 5.2 powers a shopping assistant that maintains conversation context. "Show me summer dresses" then "something more casual" then "in that blue from the photo I uploaded" then "under $80." Each turn refines the search, and the system remembers the full conversation context, building a preference profile in real time.
+- **Conversational Discovery.** GPT 5.2 powers a shopping assistant that remembers conversation context. "Show me summer dresses" then "something more casual" then "in that blue from the photo I uploaded" then "under $80." Each turn narrows the search and the system keeps track of the full conversation.
 
-**Shopify Integration Layer:** Native Shopify APIs for catalog sync, inventory checking, cart management, and checkout. New products are automatically embedded and indexed. The system respects Shopify's variant structure (size/color/style), inventory levels, and pricing rules. Deployed as a Shopify app for one click installation.
+- **Shopify Integration Layer.** Shopify APIs handle catalog sync, inventory, cart, and checkout. New products get embedded automatically. Deploys as a Shopify app for one click installation.
 
-**Analytics Dashboard:** Merchant facing analytics showing search to purchase funnels by modality, visual search conversion rates, trending visual queries, and product discovery gaps (searches with no good matches, indicating inventory opportunities).
+- **Analytics Dashboard.** Merchant facing dashboard showing search to purchase funnels, conversion rates by search type, and product discovery gaps, which tells merchants what shoppers are looking for but not finding.
 
-### Key Technical Decisions
+### Key Decisions
 
-- **Gemini 3.0 Flash for multimodal understanding:** Fastest multimodal model available for real time search. Sub 200ms response times are non negotiable for e commerce, since shoppers abandon after 3 seconds.
-- **OpenCLIP over proprietary vision models:** Open source visual embeddings mean no per query vision API costs at scale. At 1M+ daily searches, API based vision models are cost prohibitive. OpenCLIP runs on premise with fixed infrastructure cost.
-- **Shopify first distribution:** Building for Shopify's 4.61M stores isn't a platform bet. It's a distribution strategy. The Shopify app ecosystem provides discovery, installation, and billing infrastructure. Merchants don't evaluate AI vendors. They install apps.
+- **Gemini 3.0 Flash for multimodal understanding.** Speed matters in shopping. Sub 200ms responses are not optional. People leave after 3 seconds.
+- **OpenCLIP over proprietary vision models.** Open source embeddings mean no per query cost, which matters at a million searches a day.
+- **Shopify first distribution.** Building for Shopify is a distribution strategy, not just a platform choice. The app ecosystem gives you discovery, installation, and billing out of the box. Merchants install apps. They do not evaluate AI vendors.
 
 ## What I Learned
 
-The technical surprise was embedding quality at catalog scale. OpenCLIP embeddings worked well for the first few hundred products, but at 10,000+ SKUs the similarity search started returning visually irrelevant results. The problem was that product photography is not natural photography. A white t shirt on a white background against another white t shirt on a white background produces nearly identical embeddings even when the products are different. I had to build a secondary embedding pass that extracted specific attributes (neckline shape, sleeve length, fabric texture) and combined those with the visual similarity scores. The other thing I learned: sub 200ms latency is genuinely hard when you are combining vector search, metadata filtering, and LLM reranking in a single query. Weaviate's hybrid search helped, but I ended up caching the reranking step aggressively, which meant stale results for newly added products until the cache refreshed.
+Embedding quality broke down at catalog scale. OpenCLIP worked great for a few hundred products, but at 10,000+ items the similarity search started returning irrelevant results. The problem was that product photography is not natural photography. Two different white t shirts on white backgrounds produce nearly identical embeddings. I had to add a second pass that extracted specific attributes like neckline shape, sleeve length, and fabric texture, then combined those with the visual similarity scores.
+
+Getting sub 200ms latency was genuinely hard when combining vector search, metadata filtering, and LLM reranking in a single query. I ended up caching the reranking step aggressively, which meant newly added products had stale results until the cache refreshed.

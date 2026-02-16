@@ -13,28 +13,30 @@ problemStatement: "Earnings calls contain alpha-generating signals buried in 10,
 thesis: "Bloomberg built a $15B/yr terminal business on structured financial data. The next Bloomberg disrupts unstructured financial intelligence (earnings calls, SEC filings, management guidance) with AI that extracts structured signals at machine speed. The $38B AI in financial services market rewards systems that create auditable, trust-layered outputs institutional investors can actually act on."
 ---
 
-I built this to answer a question: does structured, auditable output matter more than model intelligence for adoption in regulated industries? Here is what I learned.
+I built this to explore a question. In regulated industries, does structured, auditable output matter more than raw model intelligence? Here is what I found.
 
 ## The Build
 
-An AI system that ingests earnings call transcripts, SEC filings, and market data, then produces structured intelligence briefs with sentiment trajectories, guidance extraction, risk flag detection, and cross quarter trend analysis. Built on GPT 4o's Structured Outputs to guarantee schema compliant JSON, which is critical for downstream consumption by trading systems and compliance workflows.
+A system that reads earnings call transcripts, SEC filings, and market data, then produces structured intelligence briefs. It tracks sentiment over time, pulls out guidance numbers, flags risks, and finds trends across quarters. It runs on GPT 4o Structured Outputs so every piece of output follows a strict schema, which matters when the data feeds into trading systems and compliance workflows.
 
-### Architecture
+### How It Works
 
-**Data Ingestion Pipeline:** SEC EDGAR API pulls 10 Q/10 K filings and earnings transcripts. yfinance provides price action and fundamentals for context. Raw documents are chunked with financial domain aware splitting (preserving tables, footnotes, and forward looking statement blocks).
+- **Data Ingestion Pipeline.** SEC EDGAR API pulls 10 Q and 10 K filings. yfinance fills in price data for context. Documents get split using custom logic I wrote for financial documents, because generic text splitters destroy tables and cut forward looking statements in half.
 
-**Structured Extraction Layer:** GPT 4o Structured Outputs enforces strict JSON schemas for every extraction: sentiment scores, guidance figures, risk factors, management tone shifts. No free text hallucination. Every output field maps to a source passage with citation.
+- **Structured Extraction Layer.** GPT 4o Structured Outputs handles all the extraction. Sentiment scores, guidance figures, risk factors, shifts in management tone. Everything comes back as valid JSON against a defined schema, and every data point links back to the exact passage it came from.
 
-**Vector Knowledge Base:** Chroma stores embeddings of historical earnings data, enabling cross quarter comparisons ("How did management tone on margins change from Q2 to Q3?") and peer benchmarking.
+- **Vector Knowledge Base.** Chroma stores embeddings of historical earnings data so you can ask questions like "how did management tone on margins change from Q2 to Q3" and get cross quarter comparisons.
 
-**Intelligence Dashboard:** Streamlit interface with quarter over quarter sentiment trajectories, guidance vs. actuals tracking, automated risk flags, and drill down to source passages. Designed for the analyst workflow: scan the brief, investigate the flags, make the call.
+- **Intelligence Dashboard.** Streamlit interface showing quarter over quarter sentiment, guidance versus actuals, risk flags, and drill down to source text. It follows the analyst workflow. Scan the brief, investigate the flags, make the call.
 
-### Key Technical Decisions
+### Key Decisions
 
-- **Structured Outputs over function calling:** Guaranteed schema compliance means downstream systems never break on malformed data. This is table stakes for institutional adoption.
-- **Citation linked extractions:** Every data point links to source text with page/paragraph reference. Compliance teams won't touch AI outputs without audit trails.
-- **Financial domain chunking:** Generic text splitters destroy table structures and break forward looking statements mid sentence. Custom splitters preserve financial document semantics.
+- **Structured Outputs over function calling.** Guaranteed schema compliance means nothing downstream breaks on bad data. That is table stakes for institutional use.
+- **Citation linked extractions.** Every data point links back to source text with a page and paragraph reference. Compliance teams will not use AI outputs without an audit trail.
+- **Financial domain chunking.** I wrote custom document splitting because LangChain's defaults mangled financial tables and broke statements mid sentence. Preserving document structure turned out to be a prerequisite for everything else working.
 
 ## What I Learned
 
-The financial domain chunking was far harder than I expected. Generic text splitters from LangChain destroyed table structures in 10 K filings and split forward looking statements mid sentence, which meant the extraction layer was working with mangled input before it even started. I had to write custom splitting logic that detected table boundaries, preserved footnote references, and kept safe harbor language blocks intact. The other surprise was Structured Outputs schema design. My first schemas were too rigid and the model would fail silently on edge cases like earnings calls where management gave qualitative guidance instead of numbers. I went through four schema iterations before landing on one that handled the variance in how different companies report, with optional fields and fallback extraction paths for non standard disclosures.
+The financial document splitting was harder than I expected. It took custom logic to detect table boundaries, keep footnote references intact, and preserve safe harbor language blocks. Without that, the extraction layer was working with broken input before it even started.
+
+The other challenge was schema design. My first schemas were too rigid and the model failed silently on edge cases, like earnings calls where management gave qualitative guidance instead of hard numbers. I went through four iterations before landing on something that handled the variance in how different companies report, with optional fields and fallback paths for non standard disclosures.

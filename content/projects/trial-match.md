@@ -13,28 +13,30 @@ problemStatement: "40% of cancer clinical trials fail to enroll enough patients,
 thesis: "Tempus built a $6.1B business on genomic data, but their cloud dependency gates every hospital deal on compliance cycles. Open-source reasoning models running locally solve the PHI compliance problem that has blocked hospital adoption. The clinical trial matching wedge is a $4.3B opportunity where AI can measurably save lives, and the regulatory environment is finally enabling it."
 ---
 
-I built this to answer a question: does where a model runs matter more than which model you pick? Here is what I learned.
+I built this to find out whether where a model runs matters more than which model you pick. Here is what I found.
 
 ## The Build
 
-A RAG powered system that matches synthetic patient profiles against the full ClinicalTrials.gov database using a dual model architecture: DeepSeek R1 for local, PHI safe reasoning over patient records and Claude 3.7 Sonnet for complex eligibility criteria interpretation. The system processes unstructured medical narratives, extracts structured clinical features, and ranks trial matches with explainable reasoning chains.
+A system that matches patient profiles against the full ClinicalTrials.gov database. It uses two models. DeepSeek R1 runs locally to handle patient data so nothing sensitive leaves the hospital network. Claude 3.7 Sonnet handles the complex eligibility criteria interpretation. The system reads unstructured medical notes, extracts structured clinical features, and ranks trial matches with step by step reasoning you can follow.
 
-### Architecture
+### How It Works
 
-**Patient Data Pipeline:** Synthea generates realistic synthetic patient records (demographics, conditions, medications, lab results, procedures) in FHIR format. A clinical NLP layer extracts structured features (diagnosis codes, biomarkers, treatment history, performance status) from unstructured clinical narratives.
+- **Patient Data Pipeline.** Synthea generates realistic synthetic patient records in FHIR format, covering demographics, conditions, medications, lab results, and procedures. A clinical NLP layer pulls structured features out of unstructured notes, things like diagnosis codes, biomarkers, treatment history, and performance status.
 
-**Trial Knowledge Base:** ClinicalTrials.gov API ingests active trials with full eligibility criteria. LlamaIndex processes inclusion/exclusion criteria into structured, queryable representations. Pinecone stores trial embeddings with metadata filters for phase, condition, location, and status.
+- **Trial Knowledge Base.** ClinicalTrials.gov API brings in active trials with their full eligibility criteria. LlamaIndex processes the inclusion and exclusion criteria into structured representations you can actually query against. Pinecone stores trial embeddings with filters for phase, condition, location, and status.
 
-**Dual Model Reasoning:** DeepSeek R1 runs locally for PHI sensitive patient data processing, ensuring no patient information leaves the hospital network. Claude 3.7 Sonnet handles complex eligibility logic requiring extended reasoning (multi step criteria evaluation, temporal reasoning about treatment history, biomarker threshold analysis).
+- **Dual Model Reasoning.** DeepSeek R1 runs locally and handles everything involving patient information. Claude 3.7 Sonnet handles the eligibility logic that needs deeper reasoning, like multi step criteria evaluation, temporal reasoning about treatment timelines, and biomarker threshold analysis. The two models split the work by where the data lives.
 
-**Match Interface:** React frontend displays ranked trial matches with match score breakdowns, eligibility criterion by criterion evaluation, and reasoning traces. Clinicians see exactly why a patient matched or didn't match each criterion.
+- **Match Interface.** React frontend showing ranked trial matches with score breakdowns, criterion by criterion evaluation, and full reasoning traces. A clinician can see exactly why a patient matched or did not match each criterion.
 
-### Key Technical Decisions
+### Key Decisions
 
-- **Dual model architecture (local + cloud):** PHI never leaves the local environment. DeepSeek R1 handles patient side reasoning; Claude handles trial side reasoning. This isn't a technical compromise. It's the only deployment architecture hospitals will approve.
-- **Reasoning traces over black box scores:** Oncologists won't act on a match score without understanding why. Extended thinking from both models provides step by step eligibility reasoning that clinicians can verify.
-- **Synthea for development, FHIR for production:** Building on synthetic data with the same schema as production EHR systems means the pipeline is production ready without ever touching real PHI during development.
+- **Dual model architecture (local + cloud).** This is not a compromise. It is the only architecture hospitals will actually approve. Patient data stays local. Trial data goes to the cloud. Clean separation.
+- **Reasoning traces over black box scores.** Oncologists will not act on a match score they cannot understand. Both models show their step by step thinking so clinicians can verify against their own judgment.
+- **Synthea for development, FHIR for production.** Building on synthetic data that follows the same schema as production EHR systems means the pipeline works with real data without ever touching real patient information during development.
 
 ## What I Learned
 
-Getting DeepSeek R1 to produce consistent structured output from messy clinical narratives was the hardest part of this build. Synthea generates clean, well formatted FHIR records, but real clinical notes are full of abbreviations, contradictory entries, and implicit context that the model would hallucinate structure around. I had to add a preprocessing step that normalized clinical shorthand and flagged ambiguous entries for the model to handle as uncertain rather than guessing. The other challenge was LlamaIndex processing eligibility criteria with nested boolean logic. Criteria like "must have EGFR mutation AND (no prior immunotherapy OR completed immunotherapy more than 6 months ago)" required custom parsing because the default chunking flattened the boolean structure and the model would evaluate criteria independently instead of as a group. Pinecone metadata filtering also hit performance issues when filtering across multiple dimensions (phase, condition, location, status) simultaneously at scale.
+Getting DeepSeek R1 to produce consistent structured output from messy clinical narratives was the hardest part. Synthea generates clean records, but real clinical notes are full of abbreviations, contradictions, and implied context that the model would hallucinate around. I added a preprocessing step to normalize shorthand and flag ambiguous entries as uncertain instead of letting the model guess.
+
+The other challenge was eligibility criteria with nested logic. Something like "must have EGFR mutation AND (no prior immunotherapy OR completed immunotherapy more than 6 months ago)" needed custom parsing because the default chunking flattened the boolean structure. The model would evaluate criteria independently instead of as a group, which gave wrong results.

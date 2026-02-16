@@ -14,7 +14,7 @@ export default function WritingPage() {
     <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl py-16 md:py-24">
       <div className="max-w-4xl">
         {/* Header */}
-        <div className="mb-16 md:mb-24 space-y-6">
+        <div className="mb-10 md:mb-14 space-y-6">
           <span className="font-mono text-xs text-muted-foreground block">
             $ ls writing/
           </span>

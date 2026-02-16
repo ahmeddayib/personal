@@ -13,30 +13,30 @@ problemStatement: "Enterprises can build individual AI agents, but orchestrating
 thesis: "Datadog built a $40B business making cloud infrastructure observable; the same gap exists for AI agents. The adoption bottleneck isn't agent capability; it's governance. The real buyer isn't the CTO; it's the CFO who needs to approve budgets for autonomous systems that make decisions. Agent governance (audit trails, cost controls, approval workflows) is the unlock, and whoever builds it becomes the Kubernetes of the agent era."
 ---
 
-I built this to answer a question: is governance the real bottleneck for enterprise agent adoption, not agent capability? Here is what I learned.
+I built this to test a hypothesis. That governance, not capability, is the real thing blocking enterprise agent adoption. Here is what I found.
 
 ## The Build
 
-A multi agent orchestration platform where specialized agents collaborate on complex workflows (research, analysis, content generation, data processing) with a governance layer that provides real time cost tracking, approval gates, audit trails, and rollback capabilities. Built on GPT 5 and Claude Sonnet 4.5 with CrewAI for agent coordination and LangGraph for workflow state management.
+A platform where multiple AI agents work together on workflows like research, analysis, content generation, and data processing. The interesting part is not the agents themselves but the governance layer sitting on top of them. Real time cost tracking, approval gates, audit trails, and the ability to roll back when something goes wrong. It uses GPT 5 and Claude Sonnet 4.5, with CrewAI coordinating the agents and LangGraph managing state.
 
-### Architecture
+### How It Works
 
-**Agent Registry:** Specialized agents with defined roles, capabilities, tool access, and spending limits. A Research Agent with web access and document analysis. An Analysis Agent with data processing and reasoning. A Writing Agent with content generation. A Code Agent with Anthropic Computer Use for development tasks. Each agent has a capability manifest and cost ceiling.
+- **Agent Registry.** Four specialized agents, each with a defined role, tool access, and spending limit. A research agent that browses the web and analyzes documents. An analysis agent for processing data. A writing agent for content. A code agent that uses Anthropic Computer Use for development tasks.
 
-**Orchestration Engine:** CrewAI manages agent collaboration patterns: sequential pipelines, parallel fan out, hierarchical delegation. LangGraph tracks workflow state across multi step processes. The orchestrator decides which agent handles which subtask, manages hand offs, and resolves conflicts when agents produce contradictory outputs.
+- **Orchestration Engine.** CrewAI handles how agents collaborate. Sometimes they work in sequence, sometimes in parallel, sometimes one delegates to another. LangGraph keeps track of where the workflow is at any given moment. The orchestrator decides which agent handles which piece of work, manages the handoffs, and deals with it when two agents disagree.
 
-**Governance Layer:** The core differentiator. Real time dashboards show per agent cost accrual, token usage, tool invocations, and decision logs. Approval gates pause workflows when cumulative cost exceeds thresholds or when agents propose high stakes actions. Full audit trails record every agent decision, tool call, and output for compliance review.
+- **Governance Layer.** This is what makes it more than just agents talking to each other. Dashboards show what each agent is spending, what tools it is calling, and what decisions it is making. If costs get too high or an agent tries to do something risky, the workflow pauses and waits for approval. Everything gets logged so you can review any decision the system made.
 
-**Workflow Builder:** Next.js interface where users define workflows as DAGs. Connect agents, set triggers, configure approval gates, define success criteria. Templates for common patterns (research report, competitive analysis, data pipeline, content calendar) provide starting points.
+- **Workflow Builder.** A Next.js interface where users wire agents together as a graph. Templates for common things like research reports and competitive analysis. PostgreSQL stores the full workflow state, so if something breaks at step 7 you can roll back to step 6 and try again with different settings.
 
-**Persistence & Recovery:** PostgreSQL stores workflow state, enabling pause/resume, rollback to any checkpoint, and replay with modified parameters. If an agent produces a bad output at step 7 of a 10 step workflow, you can rollback to step 6 and re run with different parameters.
+### Key Decisions
 
-### Key Technical Decisions
-
-- **Multi model architecture:** GPT 5 for tasks requiring broad knowledge and reasoning, Claude Sonnet 4.5 for tasks requiring careful analysis and code generation. Model selection per agent, not per platform, optimizes for capability and cost.
-- **Governance first design:** Most agent platforms add governance as an afterthought. Building cost controls, approval gates, and audit trails into the orchestration layer (not on top of it) means governance doesn't slow down workflows. It's woven into them.
-- **DAG based workflow definition:** Complex workflows have dependencies, parallelization opportunities, and conditional branches. DAGs (Directed Acyclic Graphs) naturally model this. Users think in workflows, not in agent configurations.
+- **Multi model architecture.** GPT 5 for tasks needing broad reasoning, Claude Sonnet 4.5 for analysis and code generation. Picking the model per agent instead of per platform lets you balance quality and cost.
+- **Governance first design.** Most agent platforms add governance as an afterthought. I built cost controls and approval gates directly into the orchestration layer so governance is part of how workflows run, not something bolted on top.
+- **DAG based workflows.** Real work has dependencies, parallel steps, and conditional branches. People think in workflows, not in agent configurations.
 
 ## What I Learned
 
-The biggest surprise was how fragile multi agent workflows are at the handoff points. Two agents can each be individually reliable, but when Agent A passes output to Agent B, the format assumptions break constantly. I spent more time building schema validation and retry logic between agents than I spent on any individual agent's capabilities. LangGraph helped with state management, but the real fix was treating every inter agent handoff as an API contract with explicit schemas and fallback behaviors. The other thing I did not expect: cost tracking had to be built into the orchestration layer itself, not layered on top. By the time a workflow finishes and you tally costs after the fact, you have already overspent. Real time cost accrual that can pause a workflow mid execution turned out to be the feature that made everything else work.
+The biggest surprise was how fragile multi agent workflows are at the handoff points. Two agents can each be individually reliable, but when one passes output to another, format assumptions break constantly. I spent more time building validation and retry logic between agents than I spent on any individual agent. The fix was treating every handoff like an API contract with explicit schemas and fallback behaviors.
+
+The other thing I did not expect was that cost tracking had to live inside the orchestration layer, not on top of it. By the time a workflow finishes and you tally costs after the fact, you have already overspent. Real time tracking that can pause a workflow mid execution turned out to be the feature that made everything else work.
